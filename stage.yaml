@@ -1,0 +1,144 @@
+---
+
+
+AWSTemplateFormatVersion: 2010-09-09
+
+
+Description: 'git LFS: API stage'
+
+
+Metadata:
+
+   AWS::CloudFormation::Interface:
+      ParameterLabels:
+         AccessLogs:
+            default: Access logs?
+         LargeFileStoreBucketName:
+            default: Bucket
+         LargeFileStorageClass:
+            default: Storage class
+         LambdaLoggingLevel:
+            default: Lambda logging level
+         StageName:
+            default: Stage name
+
+      ParameterGroups:
+         -
+            Label: API Gateway
+            Parameters:
+               - ApiId
+               - StageName
+         -
+            Label: Debugging
+            Parameters:
+               - AccessLogs
+               - LambdaLoggingLevel
+         -
+            Label: LFS store
+            Parameters:
+               - LargeFileStoreBucketName
+               - LargeFileStorageClass
+
+
+Parameters:
+
+   AccessLogs:
+      Description: Whether to enable API Gateway access logs.
+      Type: String
+      AllowedValues:
+         - 'no'
+         - 'yes'
+      Default: 'no'
+
+   ApiId:
+      Description: ID of the API.
+      Type: String
+
+   LargeFileStorageClass:
+      Description: S3 storage class to use for large file objects.
+      Type: String
+      AllowedValues:
+         - DEEP_ARCHIVE
+         - GLACIER
+         - INTELLIGENT_TIERING
+         - ONEZONE_IA
+         - REDUCED_REDUNDANCY
+         - STANDARD
+         - STANDARD_IA
+
+   LargeFileStoreBucketName:
+      Description: Name of the S3 bucket where large files are stored.
+      Type: String
+
+   LambdaLoggingLevel:
+      Description: Logging threshold for Lambda functions.
+      Type: String
+      AllowedValues:
+         - DEBUG
+         - INFO
+      Default: DEBUG
+
+   StageName:
+      Description: Name of the API stage.
+      Type: String
+
+
+Conditions:
+
+   EnableAccessLogs:
+      Fn::Equals:
+         -
+            Ref: AccessLogs
+         - 'yes'
+
+
+Resources:
+
+   LogsGroup:
+      Condition: EnableAccessLogs
+      Type: AWS::Logs::LogGroup
+      Properties:
+         RetentionInDays: 7
+
+   Stage:
+      Type: AWS::ApiGatewayV2::Stage
+      Properties:
+         ApiId:
+            Ref: ApiId
+         StageName:
+            Ref: StageName
+         AccessLogSettings:
+            Fn::If:
+               - EnableAccessLogs
+               -
+                  DestinationArn:
+                     Fn::GetAtt:
+                        - LogsGroup
+                        - Arn
+                  Format: >-
+                     $context.identity.sourceIp
+                     -
+                     -
+                     [$context.requestTime]
+                     "$context.httpMethod $context.routeKey $context.protocol"
+                     $context.status
+                     $context.responseLength
+                     $context.requestId
+               -
+                  Ref: AWS::NoValue
+         StageVariables:
+            logging_level:
+               Ref: LambdaLoggingLevel
+            storage_class:
+               Ref: LargeFileStorageClass
+            store_bucket:
+               Ref: LargeFileStoreBucketName
+         AutoDeploy: true
+
+
+Outputs:
+
+   Name:
+      Description: Name of the API stage.
+      Value:
+         Ref: Stage

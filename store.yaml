@@ -1,0 +1,82 @@
+---
+
+
+AWSTemplateFormatVersion: 2010-09-09
+
+
+Description: 'git LFS: Large file storage'
+
+
+Resources:
+
+   Bucket:
+      Type: AWS::S3::Bucket
+      DeletionPolicy: Retain
+      Properties:
+         PublicAccessBlockConfiguration:
+            BlockPublicAcls: true
+            BlockPublicPolicy: true
+            IgnorePublicAcls: true
+            RestrictPublicBuckets: true
+
+   ReadPolicy:
+      Type: AWS::IAM::ManagedPolicy
+      Properties:
+         Description:
+            Fn::Sub: Read access to git LFS store on S3 bucket ${Bucket}
+         PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+               -
+                  Sid: Bucket
+                  Action:
+                     - s3:ListBucket
+                  Resource:
+                     -
+                        Fn::GetAtt:
+                           - Bucket
+                           - Arn
+                  Effect: Allow
+               -
+                  Sid: Objects
+                  Action:
+                     - s3:GetObject
+                  Resource:
+                     -
+                        Fn::Sub: ${Bucket.Arn}/*
+                  Effect: Allow
+
+   WritePolicy:
+      Type: AWS::IAM::ManagedPolicy
+      Properties:
+         Description:
+            Fn::Sub: Write access to git LFS store on S3 bucket ${Bucket}
+         PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+               -
+                  Sid: Objects
+                  Action:
+                     - s3:PutObject
+                  Resource:
+                     -
+                        Fn::Sub: ${Bucket.Arn}/*
+                  Effect: Allow
+
+
+Outputs:
+
+   BucketName:
+      Description: Name of the S3 bucket.
+      Value:
+         Ref: Bucket
+
+   ReadPolicyArn:
+      Description: ARN of the read policy.
+      Value:
+         Ref: ReadPolicy
+
+   WritePolicyArn:
+      Description: ARN of the write policy.
+      Value:
+         Ref: WritePolicy

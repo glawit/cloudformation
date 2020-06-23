@@ -1,0 +1,99 @@
+---
+
+
+AWSTemplateFormatVersion: 2010-09-09
+
+
+Description: 'git LFS: API route'
+
+
+Parameters:
+
+   ApiId:
+      Description: ID of the API.
+      Type: String
+
+   #FunctionName:
+   #   Description: Name of the Lambda function to call.
+   #   Type: String
+
+   HttpMethod:
+      Description: HTTP request method.
+      Type: String
+      AllowedValues:
+         - DELETE
+         - GET
+         - HEAD
+         - OPTIONS
+         - PATCH
+         - POST
+         - PUT
+
+   LambdaArn:
+      Description: ARN of the Lambda function, function version or function alias to invoke.
+      Type: String
+
+   RouteKey:
+      Description: API Gateway route key, which may include variables.
+      Type: String
+      AllowedPattern: ^/.*$
+
+
+Resources:
+
+   Integration:
+      Type: AWS::ApiGatewayV2::Integration
+      Properties:
+         ApiId:
+            Ref: ApiId
+         IntegrationMethod: POST
+         IntegrationType: AWS_PROXY
+         IntegrationUri:
+            Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LambdaArn}/invocations
+         CredentialsArn:
+            Fn::GetAtt:
+               - IntegrationRole
+               - Arn
+         PayloadFormatVersion: '2.0'
+
+   IntegrationRole:
+      Type: AWS::IAM::Role
+      Properties:
+         AssumeRolePolicyDocument:
+            Version: 2012-10-17
+            Statement:
+               -
+                  Principal:
+                     Service:
+                        - apigateway.amazonaws.com
+                  Action:
+                     - sts:AssumeRole
+                  Effect: Allow
+         Policies:
+            -
+               PolicyName: lambda
+               PolicyDocument:
+                  Version: 2012-10-17
+                  Statement:
+                     -
+                        Sid: Function
+                        Action:
+                           - lambda:InvokeFunction
+                        Resource:
+                           -
+                              Ref: LambdaArn
+                        Effect: Allow
+
+   Route:
+      Type: AWS::ApiGatewayV2::Route
+      Properties:
+         ApiId:
+            Ref: ApiId
+         AuthorizationType: NONE
+         #AuthorizationScopes:
+         #   - foo
+         #   - bar
+         RouteKey:
+            Fn::Sub: ${HttpMethod} ${RouteKey}
+         Target:
+            Fn::Sub: integrations/${Integration}

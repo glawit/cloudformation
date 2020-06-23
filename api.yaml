@@ -1,0 +1,25 @@
+---
+
+
+AWSTemplateFormatVersion: 2010-09-09
+
+
+Description: 'git LFS: API'
+
+
+Resources:
+
+   Api:
+      Type: AWS::ApiGatewayV2::Api
+      Properties:
+         Description: git LFS
+         Name: git-lfs
+         ProtocolType: HTTP
+
+
+Outputs:
+
+   ApiId:
+      Description: ID of the API.
+      Value:
+         Ref: Api

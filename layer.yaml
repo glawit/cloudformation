@@ -1,0 +1,92 @@
+---
+
+
+AWSTemplateFormatVersion: 2010-09-09
+
+
+Description: 'git LFS: Lambda layer'
+
+
+Metadata:
+
+   AWS::CloudFormation::Interface:
+      ParameterLabels:
+         DeploymentBucket:
+            default: Bucket
+         DeploymentObjectKey:
+            default: Object key
+         DeploymentObjectVersion:
+            default: Object version ID
+
+      ParameterGroups:
+         -
+            Label: Deployment
+            Parameters:
+               - DeploymentBucket
+               - DeploymentObjectKey
+               - DeploymentObjectVersion
+         -
+            Label: Lambda
+            Parameters:
+               - PythonVersions
+
+
+Parameters:
+
+   DeploymentBucket:
+      Description: Name of the S3 bucket that contains the deployment package object.
+      Type: String
+
+   DeploymentObjectKey:
+      Description: Key of the deployment package object.
+      Type: String
+
+   DeploymentObjectVersion:
+      Description: Version ID of the deployment package object, if any.
+      Type: String
+      Default: ''
+
+   PythonVersions:
+      Description: Python versions supported by the deployment package.
+      Type: CommaDelimitedList
+      Default: '3.8'
+
+
+Conditions:
+
+   DeploymentObjectVersionSpecified:
+      Fn::Not:
+         -
+            Fn::Equals:
+               -
+                  Ref: DeploymentObjectVersion
+               - ''
+
+
+Resources:
+
+   LayerVersion:
+      Type: AWS::Lambda::LayerVersion
+      Properties:
+         CompatibleRuntimes:
+            Ref: PythonVersions
+         Content:
+            S3Bucket:
+               Ref: DeploymentBucket
+            S3Key:
+               Ref: DeploymentObjectKey
+            S3ObjectVersion:
+               Fn::If:
+                  - DeploymentObjectVersionSpecified
+                  -
+                     Ref: DeploymentObjectVersion
+                  -
+                     Ref: AWS::NoValue
+
+
+Outputs:
+
+   LatestVersionArn:
+      Description: ARN of the Lambda layer's latest version.
+      Value:
+         Ref: LayerVersion

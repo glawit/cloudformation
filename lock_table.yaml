@@ -1,0 +1,49 @@
+---
+
+
+AWSTemplateFormatVersion: 2010-09-09
+
+
+Description: 'git LFS: Lock table'
+
+
+Resources:
+
+#   Table:
+#      Type: AWS::DynamoDB::Table
+#      Properties:
+#         BillingMode: foobar
+#         KeySchema:
+#            -
+#               AttributeName: foobar
+#               KeyType: HASH
+
+   LockManagementPolicy:
+      Type: AWS::IAM::ManagedPolicy
+      Properties:
+         Description:
+            #Fn::Sub: Manage git LFS locks on DynamoDB table ${Table}
+            Fn::Sub: Manage git LFS locks on DynamoDB table XXX
+         PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+               -
+                  Sid: Bucket
+                  Action:
+                     - s3:ListBucket
+                  Resource:
+                     - '*'
+                  Effect: Allow
+
+
+Outputs:
+
+#   TableName:
+#      Description: Name of the DynamoDB table.
+#      Value:
+#         Ref: Table
+
+   LockManagementPolicyArn:
+      Description: ARN of the lock management policy.
+      Value:
+         Ref: LockManagementPolicy

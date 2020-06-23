@@ -1,0 +1,44 @@
+---
+
+
+AWSTemplateFormatVersion: 2010-09-09
+
+
+Description: 'git LFS: API authorizer'
+
+
+Parameters:
+
+   ApiId:
+      Description: ID of the API.
+      Type: String
+
+   IdentityProviderUrl:
+      Description: URL of the identity provider.
+      Type: String
+
+
+Resources:
+
+   Authorizer:
+      Type: AWS::ApiGatewayV2::Authorizer
+      Properties:
+         Name: git-lfs
+         ApiId:
+            Ref: ApiId
+         AuthorizerType: JWT
+         IdentitySource:
+            - $request.header.Authorization
+         JwtConfiguration:
+            Audience:
+               - 2497j91b3hi83e8gj3qrncpsmt
+            Issuer:
+               Ref: IdentityProviderUrl
+
+
+Outputs:
+
+   AuthorizerId:
+      Description: ID of the API authorizer.
+      Value:
+         Ref: Authorizer
