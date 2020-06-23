@@ -104,7 +104,7 @@ Resources:
                - Arn
          Runtime:
             Fn::Sub: python${PythonVersion}
-         Timeout: 5
+         Timeout: 10
 
    FunctionRole:
       Type: AWS::IAM::Role
