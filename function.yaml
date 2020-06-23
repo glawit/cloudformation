@@ -85,7 +85,7 @@ Resources:
                   import glawit.core.api.${HandlerModule}
 
                   handler = glawit.interface.apigw.decorator(
-                      glawit.api.${HandlerModule}.${HandlerFunction},
+                      glawit.core.api.${HandlerModule}.${HandlerFunction},
                   )
          Description: git LFS API handler
          Environment:
