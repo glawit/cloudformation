@@ -82,7 +82,7 @@ Resources:
             ZipFile:
                Fn::Sub: |
                   import glawit.interface.apigw
-                  import glawit.main.api.${HandlerModule}
+                  import glawit.core.api.${HandlerModule}
 
                   handler = glawit.interface.apigw.decorator(
                       glawit.api.${HandlerModule}.${HandlerFunction},
