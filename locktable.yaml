@@ -9,14 +9,27 @@ Description: 'git LFS: Lock table'
 
 Resources:
 
-#   Table:
-#      Type: AWS::DynamoDB::Table
-#      Properties:
-#         BillingMode: foobar
-#         KeySchema:
-#            -
-#               AttributeName: foobar
-#               KeyType: HASH
+   Table:
+      Type: AWS::DynamoDB::Table
+      Properties:
+         AttributeDefinitions:
+            -
+               AttributeName: id
+               AttributeType: S
+            -
+               AttributeName: path
+               AttributeType: S
+            -
+               AttributeName: locked_at
+               AttributeType: S
+            -
+               AttributeName: owner_name
+               AttributeType: S
+         BillingMode: PAY_PER_REQUEST
+         KeySchema:
+            -
+               AttributeName: path
+               KeyType: HASH
 
    LockManagementPolicy:
       Type: AWS::IAM::ManagedPolicy
