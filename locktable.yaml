@@ -16,9 +16,6 @@ Resources:
             -
                AttributeName: path
                AttributeType: S
-            -
-               AttributeName: creation_time
-               AttributeType: S
          BillingMode: PAY_PER_REQUEST
          KeySchema:
             -
