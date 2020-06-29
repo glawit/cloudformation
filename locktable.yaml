@@ -24,9 +24,6 @@ Resources:
             -
                AttributeName: path
                KeyType: HASH
-            -
-               AttributeName: creation_time
-               KeyType: RANGE
 
    LockManagementPolicy:
       Type: AWS::IAM::ManagedPolicy
