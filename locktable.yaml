@@ -19,14 +19,14 @@ Resources:
             -
                AttributeName: creation_time
                AttributeType: S
-            -
-               AttributeName: github_username
-               AttributeType: S
          BillingMode: PAY_PER_REQUEST
          KeySchema:
             -
                AttributeName: path
                KeyType: HASH
+            -
+               AttributeName: creation_time
+               KeyType: RANGE
 
    LockManagementPolicy:
       Type: AWS::IAM::ManagedPolicy
