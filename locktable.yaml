@@ -18,7 +18,7 @@ Resources:
                AttributeType: S
             -
                AttributeName: creation_time
-               AttributeType: N
+               AttributeType: S
             -
                AttributeName: github_username
                AttributeType: S
@@ -49,6 +49,11 @@ Resources:
 
 Outputs:
 
+   LockManagementPolicyArn:
+      Description: ARN of the lock management policy.
+      Value:
+         Ref: LockManagementPolicy
+
    TableArn:
       Description: ARN of the DynamoDB table.
       Value:
@@ -60,8 +65,3 @@ Outputs:
       Description: Name of the DynamoDB table.
       Value:
          Ref: Table
-
-   LockManagementPolicyArn:
-      Description: ARN of the lock management policy.
-      Value:
-         Ref: LockManagementPolicy
