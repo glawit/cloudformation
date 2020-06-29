@@ -14,16 +14,13 @@ Resources:
       Properties:
          AttributeDefinitions:
             -
-               AttributeName: id
-               AttributeType: S
-            -
                AttributeName: path
                AttributeType: S
             -
-               AttributeName: locked_at
-               AttributeType: S
+               AttributeName: creation_time
+               AttributeType: N
             -
-               AttributeName: owner_name
+               AttributeName: github_username
                AttributeType: S
          BillingMode: PAY_PER_REQUEST
          KeySchema:
@@ -35,26 +32,34 @@ Resources:
       Type: AWS::IAM::ManagedPolicy
       Properties:
          Description:
-            #Fn::Sub: Manage git LFS locks on DynamoDB table ${Table}
-            Fn::Sub: Manage git LFS locks on DynamoDB table XXX
+            Fn::Sub: Manage git LFS locks on DynamoDB table ${Table}
          PolicyDocument:
             Version: 2012-10-17
             Statement:
                -
-                  Sid: Bucket
                   Action:
-                     - s3:ListBucket
+                     - dynamodb:PutItem
                   Resource:
-                     - '*'
+                     -
+                        Fn::GetAtt:
+                           - Table
+                           - Arn
                   Effect: Allow
 
 
 Outputs:
 
-#   TableName:
-#      Description: Name of the DynamoDB table.
-#      Value:
-#         Ref: Table
+   TableArn:
+      Description: ARN of the DynamoDB table.
+      Value:
+         Fn::GetAtt:
+            - Table
+            - Arn
+
+   TableName:
+      Description: Name of the DynamoDB table.
+      Value:
+         Ref: Table
 
    LockManagementPolicyArn:
       Description: ARN of the lock management policy.
