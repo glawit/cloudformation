@@ -16,11 +16,17 @@ Resources:
             -
                AttributeName: path
                AttributeType: S
+            -
+               AttributeName: ref
+               AttributeType: S
          BillingMode: PAY_PER_REQUEST
          KeySchema:
             -
                AttributeName: path
                KeyType: HASH
+            -
+               AttributeName: ref
+               KeyType: RANGE
 
    LockManagementPolicy:
       Type: AWS::IAM::ManagedPolicy
