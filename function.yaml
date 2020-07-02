@@ -48,10 +48,12 @@ Parameters:
    ApiPaginationMax:
       Type: Number
       MinValue: 2
+      Default: 50
 
    ApiPaginationMin:
       Type: Number
       MinValue: 1
+      Default: 15
 
    GitHubOwner:
       Type: String
