@@ -22,26 +22,6 @@ Resources:
                AttributeName: path
                KeyType: HASH
 
-   LockManagementPolicy:
-      Type: AWS::IAM::ManagedPolicy
-      Properties:
-         Description:
-            Fn::Sub: Manage git LFS locks on DynamoDB table ${Table}
-         PolicyDocument:
-            Version: 2012-10-17
-            Statement:
-               -
-                  Action:
-                     - dynamodb:DeleteItem
-                     - dynamodb:PutItem
-                     - dynamodb:Scan
-                  Resource:
-                     -
-                        Fn::GetAtt:
-                           - Table
-                           - Arn
-                  Effect: Allow
-
    LockCreationPolicy:
       Type: AWS::IAM::ManagedPolicy
       Properties:
@@ -99,11 +79,6 @@ Resources:
 
 
 Outputs:
-
-   LockManagementPolicyArn:
-      Description: ARN of the lock management policy.
-      Value:
-         Ref: LockManagementPolicy
 
    LockCreationPolicyArn:
       Description: ARN of the lock creation policy.
