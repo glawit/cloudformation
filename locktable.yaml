@@ -42,6 +42,61 @@ Resources:
                            - Arn
                   Effect: Allow
 
+   LockCreationPolicy:
+      Type: AWS::IAM::ManagedPolicy
+      Properties:
+         Description:
+            Fn::Sub: Manage git LFS locks on DynamoDB table ${Table}
+         PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+               -
+                  Action:
+                     - dynamodb:PutItem
+                  Resource:
+                     -
+                        Fn::GetAtt:
+                           - Table
+                           - Arn
+                  Effect: Allow
+
+   LockDeletionPolicy:
+      Type: AWS::IAM::ManagedPolicy
+      Properties:
+         Description:
+            Fn::Sub: Manage git LFS locks on DynamoDB table ${Table}
+         PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+               -
+                  Action:
+                     - dynamodb:DeleteItem
+                  Resource:
+                     -
+                        Fn::GetAtt:
+                           - Table
+                           - Arn
+                  Effect: Allow
+
+   LockLookupPolicy:
+      Type: AWS::IAM::ManagedPolicy
+      Properties:
+         Description:
+            Fn::Sub: Manage git LFS locks on DynamoDB table ${Table}
+         PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+               -
+                  Action:
+                     - dynamodb:GetItem
+                     - dynamodb:Scan
+                  Resource:
+                     -
+                        Fn::GetAtt:
+                           - Table
+                           - Arn
+                  Effect: Allow
+
 
 Outputs:
 
@@ -49,6 +104,21 @@ Outputs:
       Description: ARN of the lock management policy.
       Value:
          Ref: LockManagementPolicy
+
+   LockCreationPolicyArn:
+      Description: ARN of the lock creation policy.
+      Value:
+         Ref: LockCreationPolicy
+
+   LockDeletionPolicyArn:
+      Description: ARN of the lock deletion policy.
+      Value:
+         Ref: LockDeletionPolicy
+
+   LockLookupPolicyArn:
+      Description: ARN of the lock lookup policy.
+      Value:
+         Ref: LockLookupPolicy
 
    TableArn:
       Description: ARN of the DynamoDB table.
