@@ -63,6 +63,10 @@ Parameters:
       Description: ARNs of Lambda layers to add to the function's execution environment.
       Type: CommaDelimitedList
 
+   LockTable:
+      Description: Name of the DynamoDB table where git LFS locks are registered.
+      Type: String
+
    Policies:
       Description: ARNs of IAM managed policies to attach to the function's role.
       Type: CommaDelimitedList
@@ -94,6 +98,8 @@ Resources:
                   Ref: GitHubOwner
                GITHUB_REPO:
                   Ref: GitHubRepo
+               LOCKTABLE:
+                  Ref: LockTable
          Handler: index.handler
          Layers:
             Ref: Layers
