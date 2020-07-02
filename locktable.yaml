@@ -32,7 +32,9 @@ Resources:
             Statement:
                -
                   Action:
+                     - dynamodb:DeleteItem
                      - dynamodb:PutItem
+                     - dynamodb:Scan
                   Resource:
                      -
                         Fn::GetAtt:
