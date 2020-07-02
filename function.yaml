@@ -45,6 +45,14 @@ Metadata:
 
 Parameters:
 
+   ApiPaginationMax:
+      Type: Number
+      MinValue: 2
+
+   ApiPaginationMin:
+      Type: Number
+      MinValue: 1
+
    GitHubOwner:
       Type: String
 
@@ -94,6 +102,10 @@ Resources:
          Description: git LFS API handler
          Environment:
             Variables:
+               API_PAGINATION_MAX:
+                  Ref: ApiPaginationMax
+               API_PAGINATION_MIN:
+                  Ref: ApiPaginationMin
                GITHUB_OWNER:
                   Ref: GitHubOwner
                GITHUB_REPO:
