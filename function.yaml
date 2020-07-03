@@ -19,6 +19,10 @@ Metadata:
             default: Function
          HandlerModule:
             default: Module
+         LargeFileStoreBucketName:
+            default: Bucket
+         LargeFileStorageClass:
+            default: Storage class
          Policies:
             default: IAM policies
          PythonVersion:
@@ -41,6 +45,11 @@ Metadata:
             Parameters:
                - GitHubOwner
                - GitHubRepo
+         -
+            Label: LFS store
+            Parameters:
+               - LargeFileStoreBucketName
+               - LargeFileStorageClass
 
 
 Parameters:
@@ -67,6 +76,22 @@ Parameters:
 
    HandlerModule:
       Description: Name of the glawit module that contains the API handler function to invoke.
+      Type: String
+
+   LargeFileStorageClass:
+      Description: S3 storage class to use for large file objects.
+      Type: String
+      AllowedValues:
+         - DEEP_ARCHIVE
+         - GLACIER
+         - INTELLIGENT_TIERING
+         - ONEZONE_IA
+         - REDUCED_REDUNDANCY
+         - STANDARD
+         - STANDARD_IA
+
+   LargeFileStoreBucketName:
+      Description: Name of the S3 bucket where large files are stored.
       Type: String
 
    Layers:
@@ -114,6 +139,10 @@ Resources:
                   Ref: GitHubRepo
                LOCKTABLE:
                   Ref: LockTable
+               STORAGE_CLASS:
+                  Ref: LargeFileStorageClass
+               STORE_BUCKET:
+                  Ref: LargeFileStoreBucketName
          Handler: index.handler
          Layers:
             Ref: Layers

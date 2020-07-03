@@ -13,10 +13,6 @@ Metadata:
       ParameterLabels:
          AccessLogs:
             default: Access logs?
-         LargeFileStoreBucketName:
-            default: Bucket
-         LargeFileStorageClass:
-            default: Storage class
          StageName:
             default: Stage name
 
@@ -30,11 +26,6 @@ Metadata:
             Label: Debugging
             Parameters:
                - AccessLogs
-         -
-            Label: LFS store
-            Parameters:
-               - LargeFileStoreBucketName
-               - LargeFileStorageClass
 
 
 Parameters:
@@ -49,22 +40,6 @@ Parameters:
 
    ApiId:
       Description: ID of the API.
-      Type: String
-
-   LargeFileStorageClass:
-      Description: S3 storage class to use for large file objects.
-      Type: String
-      AllowedValues:
-         - DEEP_ARCHIVE
-         - GLACIER
-         - INTELLIGENT_TIERING
-         - ONEZONE_IA
-         - REDUCED_REDUNDANCY
-         - STANDARD
-         - STANDARD_IA
-
-   LargeFileStoreBucketName:
-      Description: Name of the S3 bucket where large files are stored.
       Type: String
 
    StageName:
@@ -115,11 +90,7 @@ Resources:
                      $context.requestId
                -
                   Ref: AWS::NoValue
-         StageVariables:
-            storage_class:
-               Ref: LargeFileStorageClass
-            store_bucket:
-               Ref: LargeFileStoreBucketName
+         # StageVariables:
          AutoDeploy: true
 
 
