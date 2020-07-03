@@ -95,10 +95,10 @@ Resources:
          Code:
             ZipFile:
                Fn::Sub: |
-                  import glawit.interface.apigw
+                  import glawit.interface.apigw.handler
                   import glawit.core.api.${HandlerModule}
 
-                  handler = glawit.interface.apigw.decorator(
+                  handler = glawit.interface.apigw.handler.bind_entry_point(
                       glawit.core.api.${HandlerModule}.${HandlerFunction},
                   )
          Description: git LFS API handler
