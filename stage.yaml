@@ -17,8 +17,6 @@ Metadata:
             default: Bucket
          LargeFileStorageClass:
             default: Storage class
-         LambdaLoggingLevel:
-            default: Lambda logging level
          StageName:
             default: Stage name
 
@@ -32,7 +30,6 @@ Metadata:
             Label: Debugging
             Parameters:
                - AccessLogs
-               - LambdaLoggingLevel
          -
             Label: LFS store
             Parameters:
@@ -69,14 +66,6 @@ Parameters:
    LargeFileStoreBucketName:
       Description: Name of the S3 bucket where large files are stored.
       Type: String
-
-   LambdaLoggingLevel:
-      Description: Logging threshold for Lambda functions.
-      Type: String
-      AllowedValues:
-         - DEBUG
-         - INFO
-      Default: DEBUG
 
    StageName:
       Description: Name of the API stage.
@@ -127,8 +116,6 @@ Resources:
                -
                   Ref: AWS::NoValue
          StageVariables:
-            logging_level:
-               Ref: LambdaLoggingLevel
             storage_class:
                Ref: LargeFileStorageClass
             store_bucket:
