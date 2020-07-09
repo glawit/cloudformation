@@ -90,7 +90,6 @@ Resources:
                      $context.requestId
                -
                   Ref: AWS::NoValue
-         # StageVariables:
          AutoDeploy: true
 
 
