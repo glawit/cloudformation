@@ -41,6 +41,8 @@ Parameters:
 Resources:
 
    Certificate:
+      DependsOn:
+         - CertificateAuthorityAuthorization
       Type: AWS::CertificateManager::Certificate
       Properties:
          DomainName:
@@ -56,6 +58,22 @@ Resources:
             -
                Key: Name
                Value: git-lfs
+
+   CertificateAuthorityAuthorization:
+      Type: AWS::Route53::RecordSet
+      Properties:
+         HostedZoneId:
+            Ref: HostedZoneId
+         Name:
+            Fn::Sub: ${DomainName}.
+         Comment: AWS Certificate Manager
+         Type: CAA
+         ResourceRecords:
+            - 0 issue "amazon.com"
+            - 0 issue "amazonaws.com"
+            - 0 issue "amazontrust.com"
+            - 0 issue "awstrust.com"
+         TTL: '172800'
 
 
 Outputs:
